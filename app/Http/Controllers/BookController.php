@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
 {
@@ -40,5 +41,38 @@ class BookController extends Controller
         $book = Book::find($id);
 
         return view('books.show', compact('book'));
+    }
+
+    public function edit(string $id)
+    {
+        $book = Book::find($id);
+
+        return view('books.edit', compact('book'));
+    }
+
+    public function update(Request $request, string $id)
+    {
+        // dd($request);
+        $validatedData = $request->validate([
+            'cover_image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:2048'],
+            'name' => ['required', 'string', 'max:255'],
+            'author' => ['required', 'string', 'max:255'],
+            'description' => ['required', 'string'],
+            'is_published' => ['required', 'boolean'],
+        ]);
+
+        $book = Book::find($id);
+        // dd();
+        if ($request->hasFile('cover_image')) {
+            // delete old image if exist on request
+            Storage::delete('/public/' . $book->cover_image);
+
+            // store new image
+            $validatedData['cover_image'] = $request->file('cover_image')->store('images', 'public');
+        }
+
+        $book->update($validatedData);
+
+        return to_route('books.index')->with('success', 'Book updated successfully');
     }
 }
