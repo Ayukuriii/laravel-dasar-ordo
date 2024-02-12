@@ -22,8 +22,6 @@ class AuthenticationController extends Controller
             'password' => ['required', 'min:6', 'confirmed']
         ]);
 
-        // $validatedData['password'] = Hash::make($request->password);
-
         User::create($validatedData);
 
         return back()->withSuccess('You have successfully registered');
