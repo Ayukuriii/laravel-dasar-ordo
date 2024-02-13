@@ -48,7 +48,7 @@ class BookController extends Controller
 
         if ($request->hasFile('cover_image')) {
             // delete old image
-            Storage::delete('public/', $book->cover_image);
+            Storage::delete('public/' . $book->cover_image);
 
             $validatedData['cover_image'] = $request->file('cover_image')->store('images', 'public');
         }
@@ -56,5 +56,15 @@ class BookController extends Controller
         $book->update($validatedData);
 
         return response()->json(['success' => 'Book updatede successfully']);
+    }
+
+    public function destroy(Book $book)
+    {
+        // delete image
+        Storage::delete('public/' . $book->cover_image);
+
+        $book->delete();
+
+        return response()->json(['success' => 'Book deleted successfully']);
     }
 }
