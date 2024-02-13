@@ -24,9 +24,14 @@ class BookController extends Controller
             'is_published' => ['required', 'boolean']
         ]);
 
-        $validatedData['cover_image'] = $request->file('cover_image')->store('image', 'public');
+        $validatedData['cover_image'] = $request->file('cover_image')->store('images', 'public');
         Book::create($validatedData);
 
         return response()->json(['success' => 'Book created successfully']);
+    }
+
+    public function show(Book $book)
+    {
+        return response()->json(['data' => $book]);
     }
 }
