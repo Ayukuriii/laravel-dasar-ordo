@@ -49,4 +49,13 @@ class AuthenticationController extends Controller
             'token_type' => 'Bearer'
         ]);
     }
+
+    public function me(Request $request)
+    {
+        $user = $request->user();
+
+        return response()->json([
+            'user' => $user
+        ]);
+    }
 }
